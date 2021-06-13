@@ -3,18 +3,19 @@ const prisma = new PrismaClient();
 
 const {validateInput} = require('../helpers/validation');
 
-export const PostController = {
+export const UserController = {
     //GET
-    singlePost: async (req, res) => {
+    singleUser: async (req, res) => {
         try{
             const id = parseInt(req.params.id);
 
-            const query = await prisma.post.findUnique({
+            const query = await prisma.user.findUnique({
                 where: {
                     id
                 },
                 include: {
-                    comments: true
+                    posts: true,
+                    blogs: true
                 }
             }) ?? {};
             return res.json(query);
@@ -23,22 +24,22 @@ export const PostController = {
             return res.json({error: 'Undefined error occurred...'});
         }
     },
-    allPosts: async (req, res) => {
+    allUsers: async (req, res) => {
         try{
-            const query = await prisma.post.findMany();
+            const query = await prisma.user.findMany();
             res.json(query);
         } catch(e){
             console.log(e);
             return res.json({error: 'Undefined error occurred...'});
         }
     },
-    commentsOnPost: async (req, res) => {
+    commentsByUser: async (req, res) => {
         try{
             const id = parseInt(req.params.id);
 
             const query = await prisma.comment.findMany({
                 where: {
-                    postId: id
+                    authorId: id
                 }
             }) ?? {};
             return res.json(query);
@@ -49,19 +50,19 @@ export const PostController = {
     },
 
     //POST
-    submitPost: async (req, res) => {
-        let errors = validateInput('post', req.body, null, true);
+    createUser: async (req, res) => {
+        let errors = validateInput('user', req.body, null, true);
         if(errors) return res.json({error: errors});
 
-        let {title, content, blogId, authorId} = req.body;
+        let {email, forename, surname, url} = req.body;
 
         try{
-            const insertion = await prisma.post.create({
+            const insertion = await prisma.user.create({
                 data: {
-                    title,
-                    content,
-                    blogId,
-                    authorId
+                    email, 
+                    forename, 
+                    surname, 
+                    url
                 }
             })
 
@@ -73,16 +74,16 @@ export const PostController = {
     },
 
     //PUT
-    editPost: async (req, res) => {
-        let errors = validateInput('post', req.body);
+    editUser: async (req, res) => {
+        let errors = validateInput('user', req.body);
         if(errors) return res.json({error: errors});
 
-        let postId = +req.params.id;
+        let id = +req.params.id;
 
         try{
-            let result = await prisma.post.update({
+            let result = await prisma.user.update({
                 where: {
-                    id: postId
+                    id
                 },
                 data: req.body
             })
@@ -95,18 +96,18 @@ export const PostController = {
     },
 
     //DELETE
-    deletePost: async (req, res) => {
+    deleteUser: async (req, res) => {
 
         try{
-            let postId = +req.params.id;
+            let id = +req.params.id;
 
-            let result = await prisma.post.delete({
+            let result = await prisma.user.delete({
                 where: {
-                    id: postId
+                    id
                 }
             })
 
-            res.status(200).json({message: `You have deleted the post with ID ${req.params.id}`})
+            res.status(200).json({message: `You have deleted the user with ID ${req.params.id}`})
         } catch(e){
             console.log(e);
             return res.status(400).json({error: 'Undefined error occurred...'});
