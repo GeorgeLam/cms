@@ -1,4 +1,4 @@
-const validateInput = (contentType, input, types = null, strict = false) => {
+const validateInput = (contentType: string, input: {}, types:{} = null, strict: boolean = false) => {
     let errors = [];
 
     if(!types) types = validationTypes[contentType];
@@ -12,7 +12,7 @@ const validateInput = (contentType, input, types = null, strict = false) => {
         if(types[type].minLength && typeof(input[type]) === 'string' && input[type].length < types[type].minLength) errors.push(`Your input for '${type}' was too short: minimum length is ${types[type].minLength}`);
         
         if(types[type].mustContain) {
-            types[type].mustContain.forEach(char => {
+            types[type].mustContain.forEach((char: string) => {
                 if(input[type].indexOf(char) === -1) errors.push(`The field '${type}' must contain a ${char}`)
             });
         }

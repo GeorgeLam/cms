@@ -1,11 +1,12 @@
 import { PrismaClient, Prisma } from '@prisma/client';
+import express from 'express';
 const prisma = new PrismaClient();
 
 const {validateInput} = require('../helpers/validation');
 
 export const UserController = {
     //GET
-    singleUser: async (req, res) => {
+    singleUser: async (req: express.Request, res: express.Response) => {
         try{
             const id = parseInt(req.params.id);
 
@@ -24,7 +25,7 @@ export const UserController = {
             return res.json({error: 'Undefined error occurred...'});
         }
     },
-    allUsers: async (req, res) => {
+    allUsers: async (req: express.Request, res: express.Response) => {
         try{
             const query = await prisma.user.findMany();
             res.json(query);
@@ -33,7 +34,7 @@ export const UserController = {
             return res.json({error: 'Undefined error occurred...'});
         }
     },
-    commentsByUser: async (req, res) => {
+    commentsByUser: async (req: express.Request, res: express.Response) => {
         try{
             const id = parseInt(req.params.id);
 
@@ -50,7 +51,7 @@ export const UserController = {
     },
 
     //POST
-    createUser: async (req, res) => {
+    createUser: async (req: express.Request, res: express.Response) => {
         let errors = validateInput('user', req.body, null, true);
         if(errors) return res.json({error: errors});
 
@@ -74,7 +75,7 @@ export const UserController = {
     },
 
     //PUT
-    editUser: async (req, res) => {
+    editUser: async (req: express.Request, res: express.Response) => {
         let errors = validateInput('user', req.body);
         if(errors) return res.json({error: errors});
 
@@ -96,7 +97,7 @@ export const UserController = {
     },
 
     //DELETE
-    deleteUser: async (req, res) => {
+    deleteUser: async (req: express.Request, res: express.Response) => {
 
         try{
             let id = +req.params.id;

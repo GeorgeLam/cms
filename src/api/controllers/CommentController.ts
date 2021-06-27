@@ -1,15 +1,16 @@
 import { PrismaClient, Prisma } from '@prisma/client';
+import express from 'express';
 const prisma = new PrismaClient();
 
 const {validateInput} = require('../helpers/validation');
 
 export const CommentController = {
     //GET
-    singleComment: async (req, res) => {
+    singleComment: async (req: express.Request, res: express.Response) => {
         try{
             const id = parseInt(req.params.id);
 
-            const query = await prisma.comment.findUnique({
+            const query: {} = await prisma.comment.findUnique({
                 where: {
                     id
                 }
@@ -20,9 +21,9 @@ export const CommentController = {
             return res.json({error: 'Undefined error occurred...'});
         }
     },
-    allComments: async (req, res) => {
+    allComments: async (req: express.Request, res: express.Response) => {
         try{
-            const query = await prisma.comment.findMany();
+            const query: {} = await prisma.comment.findMany();
             res.json(query);
         } catch(e){
             console.log(e);
@@ -31,16 +32,14 @@ export const CommentController = {
     },
 
     //POST
-    submitComment: async (req, res) => {
-        let contentType = req.params;
-
-        let errors = validateInput('comment', req.body, null, true);
+    submitComment: async (req: express.Request, res: express.Response) => {
+        let errors: [] = validateInput('comment', req.body, null, true);
         if(errors) return res.json({error: errors});
 
         let {content, postId, authorId} = req.body;
 
         try{
-            const insertion = await prisma.comment.create({
+            const insertion: {} = await prisma.comment.create({
                 data: {
                     content,
                     postId,
@@ -56,14 +55,14 @@ export const CommentController = {
     },
 
     //PUT
-    editComment: async (req, res) => {
-        let errors = validateInput('comment', req.body);
+    editComment: async (req: express.Request, res: express.Response) => {
+        let errors: [] = validateInput('comment', req.body);
         if(errors) return res.json({error: errors});
 
         let commentId = +req.params.id;
 
         try{
-            let result = await prisma.comment.update({
+            let result: {} = await prisma.comment.update({
                 where: {
                     id: commentId
                 },
@@ -78,7 +77,7 @@ export const CommentController = {
     },
 
     //DELETE
-    deleteComment: async (req, res) => {
+    deleteComment: async (req: express.Request, res: express.Response) => {
 
         try{
             let commentId = +req.params.id;

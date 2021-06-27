@@ -1,5 +1,5 @@
 import express from 'express';
-var bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 
 const posts = require('./api/routes/posts');
 const comments = require('./api/routes/comments');
